@@ -12,9 +12,17 @@ fn guess(target_word: &String) -> bool {
     }
 }
 
+fn get_target_word() -> Result<String, Box<dyn std::error::Error>> {
+    let resp = reqwest::blocking::get("https://random-word-api.herokuapp.com/word?length=5")?
+        .json::<Vec<String>>()?;
+    println!("{:#?}", resp);
+    let word = resp[0].clone();
+    Ok(word)
+}
+
 fn main() {
     println!("Hello, world!");
-    let word = "happy";
+    let word = get_target_word().expect("Failed to fetch target word");
     let max_guesses = 5;
     let mut won = false;
     for i in 1..=max_guesses {
